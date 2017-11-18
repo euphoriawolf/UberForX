@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Citizen <%= userId %> </title>
+
+    
+</head>
+<body data-userId="<%= userId %>">
+    <h1>Hello Citizen <%= userId %> </h1>
+    <button onclick="requestForHelp()">
+        Request for help
+    </button>
+    <h4 id="notification">
+        <!-- some info will be displayed here -->
+    </h4>
+    <div id="map">
+        <!-- map here later -->
+    </div>
+    
+    <!-- load javascripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        var socket = io();
+
+        //fetch userId from the data-attribute of the body tag
+        var userId = document.body.getAttribute("data-userId");
+
+        // fire a join event and send userId to the server, to join a room
+        // -room-name will be the userId itself
+
+        socket.emit("join",{userId: userId});
+
+        var requestDetails ={};
+        var copDetails     ={};
+        var map, marker;
+
+        //Citizen's info
+        requestDetails = {
+            citizenId: userId,
+            location: {
+                address: "Indiranagar, Bengaluru, Karnataka 560038, India",
+                latitude: 12.9718915,
+                longitude: 77.64115449999997
+            }
+        }
+
+        //when button is clicked, fire request-for-help  and send citizen's userId and location
+
+        function requestForHelp(){
+            socket.emit("request-for-help", requestDetails);
+        }
+
+        //listen for a "request-accepted" event
+        socket.on("request-accepted", function(eventData){
+            
+            copDetails = data; //save cop details
+
+            //display Cop details
+            document.getElementById("notification").innerHTML="A cop is coming to your rescue! \n" + JSON.stringify(copDetails);
+        });
+
+    </script>
+</body>
+</html>
