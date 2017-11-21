@@ -61,19 +61,18 @@ function initialize(app, db, socket, io){
         });
     });
 
-    //listen to a 'request-accepted event from connected cops
-    socket.on("request-accpeted", function(eventData){
-        console.log("i got the request on routes");
-        
-        //covert string to mongoDB's objectId data-type
+    //Listen to a 'request-accepted' event from connected cops
+    socket.on("request-accepted", function(eventData){
+    
+        //Convert string to MongoDb's ObjectId data-type
         var ObjectID = require("mongodb").ObjectID;
         var requestId = new ObjectID(eventData.requestDetails.requestId);
-
-        //for the request with requestId, update request details
+        //For the request with requestId, update request details
         dbOperations.updateRequest(db, requestId, eventData.copDetails.copId, "engaged", function(results){
-            //fire a 'request-accepted' event to the citizen and send cop details
-            io.sockets.in(eventData.requestDetails.citizenId).emit("request-data", eventData.copDetails);
-        });
+           //Fire a 'request-accepted' event to the citizen and send cop details
+        io.sockets.in(eventData.requestDetails.citizenId).emit('request-accepted', eventData.copDetails);
+           });
+     
     });
 }
 

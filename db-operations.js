@@ -56,23 +56,24 @@ function saveRequest(db, issueId, requestTime, location, citizenId, status, call
 
 }
 
-function updateRequest(db, requestId, copId, status, callback){
-    db.collection("requestsData").update({
-        "_id" : requestId //perform update for the given requestId
-
-    },{
-        $set : {
-            "status": status, //update status to 'engaged'
-            "copId": copId //save cop's userId
+function updateRequest(db, requestId, copId, status, callback) {
+    db.collection('requestsData').update({
+        "_id": requestId //Perform update for the given requestId
+    }, {
+        $set: {
+            "status": status, //Update status to 'engaged'
+            "copId": copId  //save cop's userId
         }
-    },function(err, results){
-        if(err){
+    }, function(err, results) {
+        if (err) {
             console.log(err);
-        }else{
+        } else {
             callback("Issue updated")
         }
     });
 }
+
+
 exports.updateRequest = updateRequest;
 exports.saveRequest = saveRequest;
 exports.fetchCopDetails = fetchCopDetails;
